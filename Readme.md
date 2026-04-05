@@ -72,39 +72,17 @@ streamlit run app.py
 docker-compose up --build
 ```
 
-## 📊 Workflow 
-
-User uploads PDF
-       │
-       ▼
-PDF Loader (PyPDFLoader)
-       │
-       ▼
-Text Splitter (RecursiveCharacterTextSplitter)
-       │
-       ▼
-Embeddings (HuggingFaceEmbeddings)
-       │
-       ▼
-FAISS Vectorstore
-       │
-       ▼
-RetrievalQA Chain (LangChain)
-       │
-       ▼
-LLM (Mistral-7B-Instruct)
-       │
-       ▼
-Answer to User (FastAPI / Streamlit)
-
-
 ---
 
-
+## 📊 Workflow Diagram
 
 ## Demo
 
 ![Streamlit App Demo](images/demo.png)
+
+## Architecture
+
+![Project Architecture](images/architecture.png)
 
 
 
