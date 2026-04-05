@@ -10,25 +10,25 @@
 
 This project demonstrates a **full end-to-end RAG pipeline**:
 
-1. **PDF ingestion** → convert research papers into embeddings  
-2. **Vector storage** → FAISS semantic search  
-3. **RetrievalQA chain** → fetch relevant content + LLM answer generation  
-4. **Interactive frontend** → Streamlit UI for uploading PDFs and asking questions  
+1. PDF ingestion → convert research papers into embeddings  
+2. Vector storage → FAISS semantic search  
+3. RetrievalQA chain → fetch relevant content + LLM answer generation  
+4. Interactive frontend → Streamlit UI for uploading PDFs and asking questions  
 
-**Goal:** Showcase full-stack GenAI engineering for **FAANG/interview-ready portfolio**.
+Goal: Showcase full-stack GenAI engineering for **FAANG/interview-ready portfolio**.
 
 ---
 
 ## ⚡ Features
 
-- **FastAPI backend** for ingestion and querying  
-- **Streamlit frontend** for drag-and-drop PDFs and Q&A  
-- **LangChain modular pipeline**: document loaders, chunkers, vectorstore, chains  
-- **Open-source LLM**: Hugging Face Mistral-7B-Instruct  
-- **FAISS vectorstore** for semantic retrieval  
-- **Dockerized** for easy deployment  
-- **Environment config** via `.env`  
-- **Logging** for full observability  
+- FastAPI backend for ingestion and querying  
+- Streamlit frontend for drag-and-drop PDFs and Q&A  
+- LangChain modular pipeline: document loaders, chunkers, vectorstore, chains  
+- Open-source LLM: Hugging Face Mistral-7B-Instruct  
+- FAISS vectorstore for semantic retrieval  
+- Dockerized for easy deployment  
+- Environment config via `.env`  
+- Logging for full observability  
 
 ---
 
