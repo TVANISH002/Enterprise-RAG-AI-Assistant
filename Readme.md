@@ -1,173 +1,215 @@
-````markdown
-# 🚀 Enterprise RAG AI Assistant (LangChain + Streamlit + Hugging Face)
+```markdown
+# 🔍 ResearchGPT — Production-Style RAG System for Research Papers
 
-> Production-ready Retrieval-Augmented Generation (RAG) system for research papers.  
-> Upload PDFs, ask questions, and get **context-aware answers** powered by LangChain and Hugging Face.
+A modular, retrieval-augmented generation (RAG) system that converts research papers into a grounded question-answering engine.
 
----
-
-## 📝 Overview
-
-This project demonstrates a **full end-to-end RAG pipeline**:
-
-1. PDF ingestion → convert research papers into embeddings  
-2. Vector storage → FAISS semantic search  
-3. RetrievalQA chain → fetch relevant content + LLM answer generation  
-4. Interactive frontend → Streamlit UI for uploading PDFs and asking questions  
-
-Goal: Showcase full-stack GenAI engineering for **FAANG/interview-ready portfolio**.
+This project focuses on **reducing hallucinations**, **improving retrieval quality**, and **designing a scalable LLM pipeline** for document intelligence.
 
 ---
 
-## ⚡ Features
+## 🚀 Problem Statement
 
-- FastAPI backend for ingestion and querying  
-- Streamlit frontend for drag-and-drop PDFs and Q&A  
-- LangChain modular pipeline: document loaders, chunkers, vectorstore, chains  
-- Open-source LLM: Hugging Face Mistral-7B-Instruct  
-- FAISS vectorstore for semantic retrieval  
-- Dockerized for easy deployment  
-- Environment config via `.env`  
-- Logging for full observability  
+Large Language Models often generate fluent but **ungrounded answers** when applied to long-form documents like research papers.
+
+This project solves that by:
+- grounding responses in retrieved context
+- structuring outputs for research understanding
+- enabling scalable document querying
 
 ---
 
-## 🚀 Setup & Run
+## 🧠 System Overview
 
-1. **Install dependencies**  
+```
+
+PDF → Text Extraction → Chunking → Embedding → FAISS Index
+→ Query → Query Embedding → Top-K Retrieval → Prompt Construction → LLM → Answer
+
+```
+
+---
+
+## 🏗️ Architecture
+
+### 1. Ingestion Layer
+- PDF parsing using PyPDF2
+- Robust handling of multi-page academic documents
+- Stateless ingestion pipeline
+
+### 2. Chunking Strategy
+- Recursive / fixed-size chunking
+- Tunable `chunk_size` and `overlap`
+- Designed to balance:
+  - semantic coherence
+  - retrieval recall
+
+### 3. Embedding Layer
+- Model: `all-MiniLM-L6-v2`
+- Lightweight, high-quality sentence embeddings
+- Optimized for local inference
+
+### 4. Vector Store (FAISS)
+- Index: `IndexFlatL2`
+- Stores dense vector representations
+- Enables fast top-K similarity search
+
+### 5. Retrieval Layer
+- Query embedding → similarity search
+- Returns top-K relevant chunks
+- Tradeoff:
+  - higher K → better recall
+  - lower K → faster inference
+
+### 6. Generation Layer
+Supports two modes:
+
+#### 🔹 Local (HuggingFace)
+- Fully offline inference
+- Slower, CPU-bound
+
+#### 🔹 API-based (Groq — Recommended)
+- Low-latency inference
+- No model loading overhead
+- Production-friendly
+
+### 7. Prompt Engineering
+Structured output enforced:
+
+- Summary
+- Method
+- Key Findings
+- Limitations
+- Conclusion
+
+This improves:
+- readability
+- evaluation consistency
+- downstream usability
+
+---
+
+## ⚙️ Design Decisions
+
+### Why RAG instead of Fine-Tuning?
+- avoids expensive retraining
+- supports dynamic document updates
+- reduces hallucination via grounding
+
+### Why FAISS?
+- fast local vector search
+- simple and scalable
+- no external dependency required
+
+### Why MiniLM?
+- strong performance-to-size ratio
+- low latency on CPU
+
+### Why Structured Outputs?
+- makes answers evaluable
+- aligns with research workflows
+- improves consistency across queries
+
+---
+
+## 📊 Evaluation Strategy
+
+### 1. Semantic Similarity
+- cosine similarity between generated and expected answers
+
+### 2. Retrieval Quality
+- manual inspection of top-K chunks
+- tuning chunk size & overlap improved relevance
+
+### 3. Hallucination Reduction
+- enforced context-only prompting
+- measurable improvement in grounded responses
+
+
+---
+
+## 🔑 Setup
+
+### Environment
 
 ```bash
-pip install -r requirements.txt
+uv venv --python 3.11
+.venv\Scripts\activate
 ````
 
-2. **Set environment variables**
-
-```text
-HF_API_KEY=your_huggingface_api_key
-VECTOR_STORE_PATH=vector_store/faiss_index
-CHUNK_SIZE=1000
-CHUNK_OVERLAP=200
-```
-
-3. **Run backend (FastAPI)**
+### Install
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uv pip install -r requirements.txt
 ```
 
-* API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+---
 
-4. **Run frontend (Streamlit)**
+## ▶️ Run
+
+### Backend
 
 ```bash
-cd frontend
-streamlit run app.py
+uvicorn app.main:app --reload
 ```
 
-* UI: [http://localhost:8501/](http://localhost:8501/)
-
-5. **Optional Docker**
+### Frontend
 
 ```bash
-docker-compose up --build
+streamlit run frontend/streamlitapp.py
 ```
 
 ---
 
-## 📊 Workflow Diagram
+## 🧪 Usage
 
-## Demo
-
-![Streamlit App Demo](images/demo.png)
-
-## Architecture
-
-![Project Architecture](images/architecture.png)
-
-
-
-## 🧠 How It Works
-
-1. **PDF Ingestion**
-
-   * PyPDFLoader loads PDF pages as documents
-   * RecursiveCharacterTextSplitter splits text into chunks
-   * HuggingFaceEmbeddings converts chunks into vectors
-   * FAISS stores vectors for fast semantic retrieval
-
-2. **Query & Retrieval**
-
-   * User enters question → retriever fetches top-k chunks
-   * RetrievalQA chain sends chunks + question to LLM
-   * LLM generates **answer grounded in PDF content**
-
-3. **LLM**
-
-   * **Hugging Face Mistral-7B-Instruct**
-
-     * 7B parameters, instruction-following
-     * Free, open-source, HF API compatible
-     * Deterministic answers (`temperature=0`)
-   * Choice ensures **real RAG pipeline demonstration without cost**
+1. Upload a research paper (PDF)
+2. Ask a question
+3. System retrieves relevant chunks
+4. LLM generates grounded structured response
 
 ---
 
-## 🎯 Key Concepts Demonstrated
-
-* **RAG Pipeline**: ingestion → embeddings → retrieval → LLM → answer
-* **LangChain Concepts**: document loaders, chunkers, chains, retrievers
-* **Vectorstore (FAISS)**: semantic search for knowledge grounding
-* **Full-stack Integration**: FastAPI + Streamlit + Docker
-* **Modular, Production-ready Code**
-
----
-
-## 🧪 Testing
-
-1. Upload PDF via Streamlit or FastAPI `/ingest`
-2. Query via Streamlit or FastAPI `/query?q=Your question`
-3. Inspect logs for ingestion, retrieval, and LLM steps
-
----
-
-## 🔗 Future Improvements
-
-* Multi-PDF ingestion & multi-source RAG
-* Show **source chunks** for transparency
-* Add **Agents** for multi-step reasoning
-* Deploy as **full SaaS product**
-
----
-
-## 📌 References
-
-* [LangChain Documentation](https://www.langchain.com/docs/)
-* [FAISS](https://faiss.ai/)
-* [Hugging Face Models](https://huggingface.co/models)
-
----
-
-Project demonstrating RAG + LangChain + Hugging Face + FastAPI + Streamlit
+## 📌 Example Query
 
 ```
 
+What is transformer architecture?
 
+```
 
+---
 
+## 🧠 Example Output
 
+```
 
+Summary:
+Transformers are sequence models based on self-attention.
 
+Method:
+They use encoder-decoder architecture with multi-head attention.
 
+Key Findings:
+- No recurrence required
+- Parallel computation
+- State-of-the-art performance
 
+Limitations:
+Depends on retrieved context quality.
 
+Conclusion:
+Transformers replace recurrence with attention mechanisms.
 
+```
 
+---
 
+## 🚀 Extensions (Next Steps)
 
+* LoRA / PEFT fine-tuned generation layer
+* Hybrid search (BM25 + vector)
+* Citation-level grounding
+* Multi-document reasoning
+* Caching & latency optimization
 
-
-
-
-
-
-
+---
