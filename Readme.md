@@ -139,7 +139,7 @@ Attention replaces recurrence in sequence modeling
 
 ---
 
-## 🚀 Future Work
+## 🚀 Future Work(Phase 3)
 
 - LoRA fine-tuning  
 - Hybrid retrieval (BM25 + vector)  
